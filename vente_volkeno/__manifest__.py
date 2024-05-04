@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+{
+    "name": " VENTES: ",
+    "version": "15.0.1.0.0",
+    "author":"tafa",
+    "website" : "",
+    "category" : "", 
+    "depends" : ['product','contacts','sale','purchase','repair'],
+    'description': """ ventes """,
+    'data': [    
+           'views/produit.xml',
+           'views/achat.xml',
+           'views/sale.xml',
+           'views/icron_achat.xml',
+           'views/projet.xml',
+           'views/production.xml',
+          #'views/icron_produit.xml',
+          #'views/invoice.xml',
+          #'views/sequence_produit.xml',
+          # 'views/menu.xml',
+          # 'security/ir.model.access.csv',
+          #'security/security.xml',
+    
+    ],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+    'maintainer' :'TAFA',
+    'support': 'taftaf1949@gmail.com',
+}

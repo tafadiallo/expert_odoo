@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="sequence_self_service_product" model="ir.sequence">
+        <field name="name">Sequence produit</field>
+        <field name="code">product.template</field>
+        <field name="active">TRUE</field>
+        <field name="prefix"></field>
+        <field name="padding">3</field>
+        <field name="number_next">803</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>
