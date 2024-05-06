@@ -26,7 +26,13 @@ class Order(models.Model):
                 if achat:
                     achat.project_client_tags = order.partner_id
             order.purchase_order_count = len(order._get_purchase_orders())
+
+
+
+    
             
+
+
 class Task(models.Model):
     _inherit = "project.task"
     

@@ -13,7 +13,7 @@
            'views/sale.xml',
            'views/icron_achat.xml',
            'views/projet.xml',
-           'views/production.xml',
+        #    'views/production.xml',
           #'views/icron_produit.xml',
           #'views/invoice.xml',
           #'views/sequence_produit.xml',

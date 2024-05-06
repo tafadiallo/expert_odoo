@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-
+from odoo.http import request
 
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
@@ -10,6 +10,24 @@ class MrpProduction(models.Model):
     partner_ids = fields.One2many('res.partner', string="Clients", compute='_compute_sale_order_count')
     partner_id_custom = fields.Char(string='Clients', compute='_get_partner_ids', store=True)
     workorder_done = fields.Float(string="Progression", compute="_workorder_done")
+
+    #
+    tache_name = fields.Char(string='Nom de la tâche')
+    #,compute="_concat_tache_client_article"
+
+    
+    # def _concat_tache_client_article(self):
+    #     for res in self:
+    #        
+    #         if res.partner_ids and res.product_id:
+    #             res.tache_name = res.partner_ids.name+'/'+res.product_id.name+'/'+res.name
+    #             res.name = res.tache_name
+    #         else:
+    #             res.tache_name = res.tache_name
+
+
+
+
     #
     #partner_id =  fields.Many2one('res.partner', string="Client",compute='_compute_sale_order')
     @api.depends('partner_ids')
@@ -20,6 +38,7 @@ class MrpProduction(models.Model):
            else:
                partner_custom = ''
            rec.partner_id_custom = partner_custom
+
 
 
     @api.depends('procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id')
