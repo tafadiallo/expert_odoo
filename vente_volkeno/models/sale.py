@@ -26,8 +26,18 @@ class Order(models.Model):
                     achat.project_client_tags = order.partner_id
             order.purchase_order_count = len(order._get_purchase_orders())
 
+    
+    @api.depends('order_line.purchase_line_ids.order_id')
+    def _compute_purchase_order_count(self):
+        for order in self:
+            if order.name:
+                achat = self.env['purchase.order'].search([('origin', '=',order.name)])
+                if achat:
+                    achat.project_client_tags = order.partner_id
+            order.purchase_order_count = len(order._get_purchase_orders())
 
-def action_confirm(self):
+
+    def action_confirm(self):
         res = super(Order, self).action_confirm()
         nbre=0
         for line in self.order_line:
@@ -52,9 +62,9 @@ def action_confirm(self):
                                 'name': product.product_id.name,
                                 'product_qty': line.product_uom_qty * product.product_qty,
                                 'price_unit': 40000, 
-                            })               
+                            })
+                              
         return res
-    
             
 
 

@@ -30,6 +30,19 @@ class MrpProduction(models.Model):
 
     #
     #partner_id =  fields.Many2one('res.partner', string="Client",compute='_compute_sale_order')
+    
+
+    ########## affichage des informations dans vue calendar ###############
+    
+    def name_get(self):
+        result = []
+        for production in self:
+            name = '%s-%s-%s' % (production.partner_ids.name or '',production.product_id.name or '',production.name or '')
+            result.append((production.id, name))
+        return result
+    
+    ########## new ###############
+
     @api.depends('partner_ids')
     def _get_partner_ids(self):
        for rec in self:
