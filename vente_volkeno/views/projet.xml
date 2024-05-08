@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-     <record id="projet_form_odepo" model="ir.ui.view">
+    <record id="projet_form_odepo" model="ir.ui.view">
         <field name="name">project.task.form</field>
         <field name="model">project.task</field>
-        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="inherit_id" ref="project.view_task_form2" />
         <field name="arch" type="xml">
             <xpath expr="//group//group//field[@name='user_ids']" position="after">
                 <field name="employe_id" />
+                <field name="commande" />
+                <field name="date_livraison" readonly='1' force_save='1' decoration-info="1"/>
+                <!-- <field name="adresse_livraison_vente_ids" widget="many2many_tags"/> -->
             </xpath>
         </field>
     </record>
 
-     <record id="projet_tree_odepo" model="ir.ui.view">
+    <record id="projet_tree_odepo" model="ir.ui.view">
         <field name="name">project.task.tree</field>
         <field name="model">project.task</field>
-        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="inherit_id" ref="project.view_task_tree2" />
         <field name="arch" type="xml">
             <field name='user_ids' position="after">
                 <field name="employe_id" />
             </field>
         </field>
     </record>
-    
+
+    <record id="project_task_search" model="ir.ui.view">
+        <field name="name">project.task.search</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <search>
+              
+                <filter name="date_livraison" domain="[('date_livraison', '!=', False)]" />
+                <!-- <filter name="adresse_livraison_vente_ids" domain="[('adresse_livraison_vente_ids', '!=', False)]" /> -->
+            </search>
+        </field>
+    </record>
+
+   
+
+
 </odoo>

@@ -16,8 +16,7 @@ class Order(models.Model):
     default=fields.Datetime.now,
     help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders."
     )
-
-           
+     
     @api.depends('order_line.purchase_line_ids.order_id')
     def _compute_purchase_order_count(self):
         for order in self:
@@ -63,4 +62,14 @@ class Task(models.Model):
     _inherit = "project.task"
     
     employe_id = fields.Many2one('hr.employee', string="Employes")
+    date_livraison = fields.Datetime(string="Date de livraison")
+    commande = fields.Many2one('sale.order',string='Commande')
+
+
+
+    @api.onchange('commande')
+    def get_date_client(self):
+        if self.commande:
+            self.date_livraison, self.partner_id = self.commande.commitment_date, self.commande.partner_id
+
     
