@@ -10,6 +10,28 @@
                 <field name="date_order" nolabel="1" groups="base.group_no_one" attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}"/>
             </xpath>      
           
+          <!-- <xpath expr="//div[@name='button_box']" position="inside">
+             <button  name="action_view_purchase_orders" position='after'>
+                <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card"  attrs="{'invisible': [('state_fabrik', '=', False)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                        <span class="o_stat_text">Purchase</span>
+                    </div>
+                </button>
+            </button>
+            </xpath>   
+          
+        </field> -->
+
+        <button  name="action_view_purchase_orders" position='replace'>
+            <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card" attrs="{'invisible': [('purchase_order_count', '=', 0)]}">
+                <div class="o_field_widget o_stat_info">
+                    <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                    <span class="o_stat_text">Purchase</span>
+                </div>
+            </button>
+        </button> 
+
         </field>
     </record>
 </odoo>
