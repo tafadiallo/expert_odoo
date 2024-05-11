@@ -53,10 +53,10 @@ class Order(models.Model):
                            print(" nomenclature",nomenclature)
                            for product in nomenclature.bom_line_ids:
                               nbre+=1
-                              supplier = product.product_id.seller_ids[0] or False
+                              supplier = product.product_id.seller_ids[0]
                              
                               purchase_order = self.env['purchase.order'].create({
-                                    'partner_id': supplier,  
+                                    'partner_id': supplier.id,  
                                     'origin': self.name,
                               })
                              
