@@ -5,7 +5,11 @@ from datetime import date
 
 class Order(models.Model):
     _inherit = "sale.order"
+    _rec_name = "so_client"
+
     
+    so_client = fields.Char(string="SO/Client",readonly=True, copy=False, index=True, compute='_so_client')
+
     date_order = fields.Datetime(
     string='Order Date',
     required=True,
@@ -16,7 +20,28 @@ class Order(models.Model):
     default=fields.Datetime.now,
     help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders."
     )
-     
+
+
+    def write(self, vals):
+        rec = super(Order, self).write(vals)
+
+        date_livraison, partner_id = vals.get('commitment_date'), vals.get('partner_id')
+        task_updates = {'date_livraison': date_livraison} if date_livraison else {}
+        task_updates.update({'partner_id': partner_id}) if partner_id else {}
+
+        if task_updates:
+            tasck_order = self.env['project.task'].search([('commande', '=', self.id)])
+            tasck_order.write(task_updates)
+        return rec
+
+
+
+    def _so_client(self):
+        for rec in self:
+            rec.so_client = rec.name + (' / ' + rec.partner_id.name if rec.name and rec.partner_id.name else '')
+
+
+           
     @api.depends('order_line.purchase_line_ids.order_id')
     def _compute_purchase_order_count(self):
         for order in self:
@@ -27,14 +52,14 @@ class Order(models.Model):
             order.purchase_order_count = len(order._get_purchase_orders())
 
     
-    @api.depends('order_line.purchase_line_ids.order_id')
-    def _compute_purchase_order_count(self):
-        for order in self:
-            if order.name:
-                achat = self.env['purchase.order'].search([('origin', '=',order.name)])
-                if achat:
-                    achat.project_client_tags = order.partner_id
-            order.purchase_order_count = len(order._get_purchase_orders())
+    # @api.depends('order_line.purchase_line_ids.order_id')
+    # def _compute_purchase_order_count(self):
+    #     for order in self:
+    #         if order.name:
+    #             achat = self.env['purchase.order'].search([('origin', '=',order.name)])
+    #             if achat:
+    #                 achat.project_client_tags = order.partner_id
+    #         order.purchase_order_count = len(order._get_purchase_orders())
 
 
     def action_confirm(self):
@@ -81,5 +106,4 @@ class Task(models.Model):
     def get_date_client(self):
         if self.commande:
             self.date_livraison, self.partner_id = self.commande.commitment_date, self.commande.partner_id
-
     

@@ -7,9 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//group//group//field[@name='user_ids']" position="after">
                 <field name="employe_id" />
-                <field name="commande" />
+                 <field name="commande" />
                 <field name="date_livraison" readonly='1' force_save='1' decoration-info="1"/>
-                <!-- <field name="adresse_livraison_vente_ids" widget="many2many_tags"/> -->
             </xpath>
         </field>
     </record>
@@ -30,14 +29,9 @@
         <field name="model">project.task</field>
         <field name="arch" type="xml">
             <search>
-              
                 <filter name="date_livraison" domain="[('date_livraison', '!=', False)]" />
-                <!-- <filter name="adresse_livraison_vente_ids" domain="[('adresse_livraison_vente_ids', '!=', False)]" /> -->
             </search>
         </field>
     </record>
-
-   
-
-
+    
 </odoo>

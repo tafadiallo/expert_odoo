@@ -8,6 +8,7 @@
             
             <xpath expr="//sheet//group[@name='sale_header']//group[@name='order_details']//field[@name='date_order']" position="replace">
                 <field name="date_order" nolabel="1" groups="base.group_no_one" attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}"/>
+                <field name="so_client" invisible='1'/>
             </xpath>      
           
         </field>
