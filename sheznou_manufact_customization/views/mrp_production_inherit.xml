@@ -48,7 +48,7 @@
         </record>
 
 
-        <record id="mrp_workorder_list_view_sheznou_custom" model="ir.ui.view">
+        <!-- <record id="mrp_workorder_list_view_sheznou_custom" model="ir.ui.view">
             <field name="name">mrp.workorder.inherited.list.sheznou.custom</field>
             <field name="model">mrp.workorder</field>
             <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view" />
@@ -85,6 +85,6 @@
               
                 
             </field>
-        </record>
+        </record> -->
         
     </data></odoo>

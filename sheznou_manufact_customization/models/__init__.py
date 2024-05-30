@@ -3,3 +3,4 @@
 from . import models
 from . import mrp_production
 from . import repair_order
+from . import test
