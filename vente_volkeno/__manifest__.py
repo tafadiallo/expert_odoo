@@ -5,7 +5,7 @@
     "author":"tafa",
     "website" : "",
     "category" : "", 
-    "depends" : ['product','contacts','sale','purchase','repair','project'],
+    "depends" : ['product','mrp','contacts','sale','purchase','repair','project'],
     'description': """ ventes """,
     'data': [    
            'views/produit.xml',
