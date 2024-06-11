@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 {
     "name": " VENTES: ",
+    'summary': """Gestion des ventes de Sheznou""",
     "version": "15.0.1.0.0",
-    "author":"tafa",
+    "author":"Mouhamadou Moustapha DIALLO, Mouhamadou Hafiz KA et Ali Adilani EL FAYAZ ",
     "website" : "",
     "category" : "", 
     "depends" : ['product','mrp','contacts','sale','purchase','repair','project'],
@@ -25,6 +26,6 @@
     'installable': True,
     'auto_install': False,
     'application': True,
-    'maintainer' :'TAFA',
+    'maintainer' :'Mouhamadou Moustapha DIALLO',
     'support': 'taftaf1949@gmail.com',
 }
