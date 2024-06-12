@@ -215,9 +215,181 @@ class MrpWorkOrder(models.Model):
 
 
 
+#=========================================================================
+#                   Backup_02
+#=========================================================================
+
+import datetime
+from datetime import date
+from odoo import api, fields, models, _
+
+class MrpProduction(models.Model):
+    _inherit = 'mrp.production'
 
 
+###################################################################################################
+#                       1er cas: l'ordre de fabrication ne depasse pas 17h
+###################################################################################################
+ 
+            
+    @api.model
+    def create(self, vals):
+        res = super(MrpProduction, self).create(vals)
+        # print("##########",res.date_planned_start,res.date_planned_finished)
+        dure_hour = sum(res.workorder_ids.mapped('duration_expected')) / 60
+        liste_date = []
+        date_planned_start = res.date_planned_start
+        date = date_planned_start.date()
+        date_planned_finished = f"{date} 17:00:00"
+
+        #
+        date_today = date.today()
+        annee = date_today.year
+        mois = date_today.month
+        jour = date_today.day
+        
+
+        nom = res.name
+        date_tmp=''
+        date_debut=res.date_planned_start
+        date_fin=f"{date} 17:00:00"
+        #
+
+        # si la OM va etre cree uniquement le jour j
+        if dure_hour <= 8.0:
+            self.env['mrp.workorder'].create({
+                'date_planned_start': date_planned_start,
+                'date_planned_finished': date_planned_finished,
+                'name': nom,
+                'workcenter_id': 1,  
+                'product_uom_id': res.product_uom_id.id,  
+                'production_id': res.id  
+            })
+        # si la OM va etre cree au moins le jour j et le j+1
+        if dure_hour > 8.0:
+            dure_restant = dure_hour
+            i = 0
+            
+            # tant que il reste du temps dans l OM necessaire pour creer le jour j et le jour j+1
+            while(dure_restant > 0):
+                nom = res.name+'_'+str(i)
+
+                self.env['mrp.workorder'].create({
+                    'date_planned_start': date_debut,
+                    'date_planned_finished': date_fin,
+                    'name': nom,
+                    'workcenter_id': 1,  
+                    'product_uom_id': res.product_uom_id.id,  
+                    'production_id': res.id
+                })
+                i+=1
+                # date_tmp=date_planned_finished
+                date_debut="2024-06-12 08:00:00"
+                date_fin = "2024-06-12 15:00:00"
+                # date_debut = date_tmp
+                # 
+                date_planned_finished_str = "2024-06-12 08:00:00"
+                date_planned_finished = datetime.datetime.strptime(date_planned_finished_str, "%Y-%m-%d %H:%M:%S")
+                date_debut1_anne = date_planned_finished.year
+                date_debut1_mois = date_planned_finished.month
+                date_debut1_jour = date_planned_finished.day
+                heure = date_planned_finished.hour
+                heure_debut1=heure
+                heure_fin=0
+                
+               
+                
+                # rendre dynamique la date
+                if date_debut1_jour:
+                    if date_debut1_jour!='31':
+                        date_debut1_jour += 1
+                        date_debut1_mois=date_debut1_mois
+                        date_debut1_anne=date_debut1_anne
+                    if date_debut1_jour =='31' and date_debut1_mois!='12':
+                        date_debut1_jour = 1
+                        date_debut1_mois += 1
+                        date_debut1_anne=date_debut1_anne
+                    if date_debut1_jour =='31' and date_debut1_mois=='12':
+                        date_debut1_jour = 1
+                        date_debut1_mois = 1
+                        date_debut1_anne +=1
+                    date_str = f"{date_debut1_anne}-{date_debut1_mois:02}-{date_debut1_jour:02}"
+                
+                #rendre dynamique l heure
+                if heure==17:
+                    if dure_restant<=5:          # ce 5 c est pour la duree du travaille journalier avant la pause
+                        heure_debut1=8           # ce 8 est equivalent a 08:00
+                        heure_fin=8+dure_restant # heure_fin est l heure de fin de OM
+                        date_debut_01 = date_str+f" 0{heure_debut1}:00:00"
+                        date_fin_01 = date_str+f" {heure_fin}:00:00"
+                        nom_01=res.name+str(i)
+                        self.env['mrp.workorder'].create({
+                        'date_planned_start': date_debut_01,
+                        'date_planned_finished': date_fin_01,
+                        'name': nom_01,
+                        'workcenter_id': 1,  
+                        'product_uom_id': res.product_uom_id.id,  
+                        'production_id': res.id
+                        })
+                    if dure_restant>5:
+                        heure_debut_01=8
+                        heure_fin_01=13
+                        date_avant_hp_debut_01=date_str+f" 0{heure_debut_01}:00:00"
+                        date_avant_hp_fin_01=date_str+f" {heure_fin_01}:00:00"
+                        nom_01=res.name+'Avant_HP_'+str(i)
+                        self.env['mrp.workorder'].create({
+                        'date_planned_start': date_avant_hp_debut_01,
+                        'date_planned_finished': date_avant_hp_fin_01,
+                        'name': nom_01,
+                        'workcenter_id': 1,  
+                        'product_uom_id': res.product_uom_id.id,  
+                        'production_id': res.id
+                        })
+                        heure_debut_02=14
+                        heure_fin_02=14+(dure_restant-5)
+                        date_apres_hp_debut_02=date_str+f" {heure_debut_02}:00:00"
+                        date_apres_hp_fin_02=date_str+f" {heure_fin_02}:00:00"
+                        nom_02=res.name+'Apres_HP_'+str(i)
+                        self.env['mrp.workorder'].create({
+                        'date_planned_start': date_apres_hp_debut_02,
+                        'date_planned_finished': date_apres_hp_fin_02,
+                        'name': nom_02,
+                        'workcenter_id': 1,  
+                        'product_uom_id': res.product_uom_id.id,  
+                        'production_id': res.id
+                        })
+                    
+                else:
+                    print("###################")
+
+                dure_restant = dure_restant - 8.0
+
+            # dure_restant < 0 : si le temps restant ne permet pas de cree le jours j+1, on cree l om le jour j uniquement
+            if dure_restant < 0:
+                date_planned_start = res.date_planned_start
+                date = date_planned_start.date()
+                date_planned_finished = f"{date} 17:00:00"
+                
+                self.env['mrp.workorder'].create({
+                        'name': 'TEST_adi1',
+                        'workcenter_id': 1,  
+                        'product_uom_id': res.product_uom_id.id,  
+                        'production_id': res.id,
+                        'date_planned_start': "2024-06-11 10:00:00",
+                        'date_planned_finished': "2024-06-11 17:00:00",
+                })
+        return res
     
+
+
+
+
+
+
+
+
+
+
 
 
         
