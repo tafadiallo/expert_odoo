@@ -60,7 +60,7 @@ class MrpProduction(models.Model):
                 'product_uom_id': res.product_uom_id.id,  
                 'production_id': res.id
                 })
-            if duration_expected_heure>5 and heure_date_depart in [14,15,16]:
+            if duration_expected_heure>3 and heure_date_depart in [14,15,16]:
                 # date_str = datetime.datetime.strptime(res.date_planned_start, "%Y-%m-%d %H:%M:%S")
                 date_debut1_anne = res.date_planned_start.year
                 date_debut1_mois = res.date_planned_start.month
