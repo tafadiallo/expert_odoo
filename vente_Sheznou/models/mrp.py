@@ -95,23 +95,23 @@ class MrpProduction(models.Model):
                 })
                 
                 
-                if s:
-                    nom_04=res.name+'Apres_17H'
-                    date_debut_apres_17=date_str_dyn+f" 08:00:00"
-                    heure_fin_ap_17h=8+(duration_expected_heure-5)
-                    date_fin_apres_17=date_str_dyn+f" 0{int(heure_fin_ap_17h)}:00:00"
-                    print("date_debut_apres_17",date_debut_apres_17)
-                    print("date_fin_apres_17",date_fin_apres_17)
-                    nom_01=res.name+'Avant_HPause'
+            #     if s:
+            #         nom_04=res.name+'Apres_17H'
+            #         date_debut_apres_17=date_str_dyn+f" 08:00:00"
+            #         heure_fin_ap_17h=8+(duration_expected_heure-5)
+            #         date_fin_apres_17=date_str_dyn+f" 0{int(heure_fin_ap_17h)}:00:00"
+            #         print("date_debut_apres_17",date_debut_apres_17)
+            #         print("date_fin_apres_17",date_fin_apres_17)
+            #         nom_01=res.name+'Avant_HPause'
 
-                    self.env['mrp.workorder'].create({
-                    'date_planned_start': date_debut_apres_17,
-                    'date_planned_finished': date_fin_apres_17,
-                    'name': nom_04,
-                    'workcenter_id': 1,  
-                    'product_uom_id': res.product_uom_id.id,  
-                    'production_id': res.id
-                    })
+            #         self.env['mrp.workorder'].create({
+            #         'date_planned_start': date_debut_apres_17,
+            #         'date_planned_finished': date_fin_apres_17,
+            #         'name': nom_04,
+            #         'workcenter_id': 1,  
+            #         'product_uom_id': res.product_uom_id.id,  
+            #         'production_id': res.id
+            #         })
         # #
         # if duration_expected_heure > 8.0:
         #     dure_restant = duration_expected_heure
