@@ -4,6 +4,8 @@
 import datetime
 from datetime import date
 from odoo import api, fields, models, _
+import logging
+_logger = logging.getLogger(__name__)
 
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
@@ -21,8 +23,14 @@ class MrpProduction(models.Model):
        
         if duration_expected_heure <= 8.0:
             heure_date_depart = res.date_planned_start.hour
-            
-            if duration_expected_heure<=5 and heure_date_depart in [8,9,10,11,12]:                  
+            _logger.info('##############################')               
+            _logger.info(heure_date_depart)        
+            _logger.info('##############################') 
+            if duration_expected_heure<=5.0 and heure_date_depart in [8,9,10,11,12]: 
+                _logger.info('##############################')               
+                _logger.info(res.date_planned_start)        
+                _logger.info('##############################')               
+           
                 heure_fin=heure_date_depart+duration_expected_heure
                 date_str_01 = res.date_planned_start.strftime("%Y-%m-%d %H:%M:%S").split(' ')[0]
                 date_fin_planification = date_str_01+f" {int(heure_fin)}:00:00"
@@ -31,11 +39,12 @@ class MrpProduction(models.Model):
                 'date_planned_start': res.date_planned_start,
                 'date_planned_finished': date_fin_planification,
                 'name': res.name,
-                'workcenter_id': 1,  
+                'workcenter_id': res.workorder_ids[0].workcenter_id.id,  
                 'product_uom_id': res.product_uom_id.id,  
                 'production_id': res.id
                 })
-            if duration_expected_heure>5 and heure_date_depart in [8,9,10,11,12]:                   
+            if duration_expected_heure>5.0:  
+                _logger.info('##############################')               
                 # heure_fin=heure_date_depart+duration_expected_heure
                 date_str_02 = res.date_planned_start.strftime("%Y-%m-%d %H:%M:%S").split(' ')[0] 
                 date_fin_planification_01 = date_str_02+f" 13:00:00"
@@ -44,10 +53,11 @@ class MrpProduction(models.Model):
                 'date_planned_start': res.date_planned_start,
                 'date_planned_finished': date_fin_planification_01,
                 'name': nom_01,
-                'workcenter_id': 1,  
+                'workcenter_id': res.workorder_ids[0].workcenter_id.id,  
                 'product_uom_id': res.product_uom_id.id,  
                 'production_id': res.id
                 })
+                _logger.info('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM') 
                 nom_02=res.name+"Apres_HPause"
                 date_debut_planification_03 = date_str_02+f" 14:00:00"
                 heure_planification_fin_04 =14+(duration_expected_heure-5)
@@ -56,7 +66,7 @@ class MrpProduction(models.Model):
                 'date_planned_start': date_debut_planification_03,
                 'date_planned_finished': date_fin_planification_04,
                 'name': nom_02,
-                'workcenter_id': 1,  
+                'workcenter_id': res.workorder_ids[0].workcenter_id.id,  
                 'product_uom_id': res.product_uom_id.id,  
                 'production_id': res.id
                 })
@@ -89,7 +99,7 @@ class MrpProduction(models.Model):
                 'date_planned_start': res.date_planned_start,
                 'date_planned_finished': date_debut_planification_04,
                 'name': nom_03,
-                'workcenter_id': 1,  
+                'workcenter_id': res.workorder_ids[0].workcenter_id.id,  
                 'product_uom_id': res.product_uom_id.id,  
                 'production_id': res.id
                 })
