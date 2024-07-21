@@ -2,7 +2,7 @@
 {
     "name": " VENTES: ",
     'summary': """Gestion des ventes de Sheznou""",
-    "version": "15.0.1.0.0",
+    "version": "17.0.1.0.0",
     "author":"Mouhamadou Moustapha DIALLO, Mouhamadou Hafiz KA et Ali Adilani EL FAYAZ ",
     "website" : "",
     "category" : "", 
