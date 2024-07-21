@@ -6,7 +6,7 @@
     "author":"Mouhamadou Moustapha DIALLO, Mouhamadou Hafiz KA et Ali Adilani EL FAYAZ ",
     "website" : "",
     "category" : "", 
-    "depends" : ['product','mrp','contacts','sale','purchase','repair','project'],
+    "depends" : ['product','mrp','contacts','sale','purchase','repair','project','timesheet_grid','hr_presence'],
     'description': """ ventes """,
     'data': [    
            'views/produit.xml',

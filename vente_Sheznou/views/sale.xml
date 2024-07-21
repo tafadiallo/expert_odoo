@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             
             <xpath expr="//sheet//group[@name='sale_header']//group[@name='order_details']//field[@name='date_order']" position="replace">
-                <field name="date_order" nolabel="1" groups="base.group_no_one" attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}"/>
+                <field name="date_order" nolabel="1" groups="base.group_no_one" invisible="[('state', 'in', ['sale', 'done', 'cancel'])]"/>
                 <field name="so_client" invisible='1'/>
             </xpath>      
           
@@ -25,7 +25,7 @@
         </field> -->
 
         <button  name="action_view_purchase_orders" position='replace'>
-            <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card" attrs="{'invisible': [('purchase_order_count', '=', 0)]}">
+            <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card" invisible="[('purchase_order_count', '=', 0)]">
                 <div class="o_field_widget o_stat_info">
                     <span class="o_stat_value"><field name="purchase_order_count"/></span>
                     <span class="o_stat_text">Purchase</span>
