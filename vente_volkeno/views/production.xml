@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="odoo_client_production_calendar_view" model="ir.ui.view">
+        <field name="name">.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.view_production_calendar"/>
+        <field name="arch" type="xml">
+             <field name="product_id" position='after'>
+                <field name='partner_ids' attrs="{'invisible': [('state', '=', 'cancel')]}"/>
+                <field name='name' attrs="{'invisible': [('state', '=', 'cancel')]}"/>
+             </field>
+        </field>
+    </record>
+</odoo>  
+
+

@@ -8,6 +8,7 @@
                 <xpath expr="//field[@name='bom_id']" position="before">
                     <field name="partner_ids" widget="many2many_tags" />
                     <!-- <field name="partner_id"/> -->
+                    <field name="employe_id" />
                     <field name="partner_id_custom" invisible="True" />
                     <field name="workorder_done" widget="progressbar" />
                     <field name="tache_name" />
@@ -23,6 +24,7 @@
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="partner_ids" widget="many2many_tags" optional="show" />
                     <!-- <field name="partner_id"/> -->
+                    <field name="employe_id" />
                 </xpath>
 
                 <xpath expr="//field[@name='components_availability']" position="after">
@@ -48,7 +50,7 @@
         </record>
 
 
-        <!-- <record id="mrp_workorder_list_view_sheznou_custom" model="ir.ui.view">
+        <record id="mrp_workorder_list_view_sheznou_custom" model="ir.ui.view">
             <field name="name">mrp.workorder.inherited.list.sheznou.custom</field>
             <field name="model">mrp.workorder</field>
             <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view" />
@@ -85,6 +87,6 @@
               
                 
             </field>
-        </record> -->
+        </record>
         
     </data></odoo>

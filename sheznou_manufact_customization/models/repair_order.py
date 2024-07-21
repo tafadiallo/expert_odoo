@@ -7,4 +7,4 @@ from odoo import api, fields, models, _
 class RepairOrder(models.Model):
     _inherit = 'repair.order'
 
-    employee_ids = fields.Many2many('hr.employee', string="Assigné à")
+    employee_id = fields.Many2one('hr.employee', string="Employés")

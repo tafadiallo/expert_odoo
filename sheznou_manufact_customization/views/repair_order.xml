@@ -7,8 +7,19 @@
             <field name="inherit_id" ref="repair.view_repair_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='tag_ids']" position="after">
-                    <field name="employee_ids" widget="many2many_tags"/>
+                    <field name="employee_id"/>
                 </xpath>
+            </field>
+        </record>
+
+        <record id="repair_order_tree_view_sheznou_custom" model="ir.ui.view">
+            <field name="name">repair.order.inherited.tree.sheznou.custom</field>
+            <field name="model">repair.order</field>
+            <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+            <field name="arch" type="xml">
+                <field name='name' position="after">
+                    <field name="employee_id"/>
+                </field>
             </field>
         </record>
     </data>

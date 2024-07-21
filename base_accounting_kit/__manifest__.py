@@ -18,7 +18,7 @@
 #    (LGPL v3) along with this program.
 {
     'name': 'Odoo 15 Full Accounting Kit',
-    'version': '15.0.2.2.6',
+    'version': '17.0.1.0.0',
     'category': 'Accounting',
     'live_test_url': 'https://www.youtube.com/watch?v=peAp2Tx_XIs',
     'summary': """ Asset and Budget Management,

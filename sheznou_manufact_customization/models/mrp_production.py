@@ -1,127 +1,110 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api , _
-from odoo.exceptions import ValidationError
-from datetime import date
-import logging
-_logger = logging.getLogger(__name__)
-class Order(models.Model):
-    _inherit = "sale.order"
-    _rec_name = "so_client"
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from odoo import api, fields, models, _
+from odoo.http import request
+
+class MrpProduction(models.Model):
+    _inherit = 'mrp.production'
+
+    partner_ids = fields.One2many('res.partner', string="Clients", compute='_compute_sale_order_count')
+    partner_id_custom = fields.Char(string='Clients', compute='_get_partner_ids', store=True)
+    workorder_done = fields.Float(string="Progression", compute="_workorder_done")
+    employe_id = fields.Many2one('hr.employee', string="Employes")
+
+    #
+    tache_name = fields.Char(string='Nom de la tâche')
+    #,compute="_concat_tache_client_article"
 
     
-    so_client = fields.Char(string="SO/Client",readonly=True, copy=False, index=True, compute='_so_client')
-
-    date_order = fields.Datetime(
-    string='Order Date',
-    required=True,
-    readonly=True,
-    index=True,
-    states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'sale': [('readonly', False)]},  # Added 'sale' state
-    copy=False,
-    default=fields.Datetime.now,
-    help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders."
-    )
-
-
-    def write(self, vals):
-        rec = super(Order, self).write(vals)
-
-        date_livraison, partner_id = vals.get('commitment_date'), vals.get('partner_id')
-        task_updates = {'date_livraison': date_livraison} if date_livraison else {}
-        task_updates.update({'partner_id': partner_id}) if partner_id else {}
-
-        if task_updates:
-            tasck_order = self.env['project.task'].search([('commande', '=', self.id)])
-            tasck_order.write(task_updates)
-        return rec
+    # def _concat_tache_client_article(self):
+    #     for res in self:
+    #        
+    #         if res.partner_ids and res.product_id:
+    #             res.tache_name = res.partner_ids.name+'/'+res.product_id.name+'/'+res.name
+    #             res.name = res.tache_name
+    #         else:
+    #             res.tache_name = res.tache_name
 
 
 
-    def _so_client(self):
-        for rec in self:
-            rec.so_client = rec.name + (' / ' + rec.partner_id.name if rec.name and rec.partner_id.name else '')
+
+    #
+    #partner_id =  fields.Many2one('res.partner', string="Client",compute='_compute_sale_order')
+    
+
+    ########## affichage des informations dans vue calendar ###############
+    
+    def name_get(self):
+        result = []
+        for production in self:
+            name = '%s-%s-%s' % (production.partner_ids.name or '',production.product_id.name or '',production.name or '')
+            result.append((production.id, name))
+        return result
+    
+    ########## new ###############
+
+    @api.depends('partner_ids')
+    def _get_partner_ids(self):
+       for rec in self:
+           if rec.partner_ids:
+               partner_custom = ','.join([p.name for p in rec.partner_ids])
+           else:
+               partner_custom = ''
+           rec.partner_id_custom = partner_custom
 
 
-           
-     
-    state_fabrik = fields.Boolean(default=False)
 
-    @api.depends('order_line.purchase_line_ids.order_id')
-    def _compute_purchase_order_count(self):
-        for order in self:
-            if order.name:
-                achat = self.env['purchase.order'].search([('origin', '=',order.name)])
-                if achat:
-                    achat.project_client_tags = order.partner_id
-            order.purchase_order_count = len(order._get_purchase_orders())
+    @api.depends('procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id')
+    def _compute_sale_order_count(self):
+        for production in self:
+            production.sale_order_count = len(production.procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id)
+            sale_orders = production.procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id
+            partner_ids = [order.partner_id.id for order in sale_orders]
+            if partner_ids:
+                production.partner_ids = [(6, 0, partner_ids)]
+            else:
+                production.partner_ids = [(5, 0, 0)]  # Clear existing partner_ids if no orders
+   
+    # @api.depends('procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id')
+    # def _compute_sale_order(self):
+    #     for production in self:
+    #         production.sale_order_count = len(production.procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id)
+    #         sale_order = production.procurement_group_id.mrp_production_ids.move_dest_ids.group_id.sale_id
+    #         if sale_order:
+    #             production.partner_id =sale_order.partner_id.id
+    #         else:
+    #             production.partner_id =None 
+                
+    @api.depends('workorder_ids')
+    def _workorder_done(self):
+        for record in self:
+            if not record.workorder_ids:
+                record.workorder_done = 0
+            else:
+                done_workorders = record.workorder_ids.filtered(lambda wo: wo.state == 'done')
+                record.workorder_done = 100 * len(done_workorders) / len(record.workorder_ids) if record.workorder_ids else 0
+
+
+class MrpWorkOrder(models.Model):
+    _inherit = 'mrp.workorder'
+
+    partner_ids = fields.One2many('res.partner', string="Clients", related="production_id.partner_ids")
+    partner_id_custom = fields.Char(string='Clients', compute='_get_partner_ids', store=True)
+    employee_ids = fields.Many2many('hr.employee', string="Employé")
+
+    
+    @api.depends('partner_ids')
+    def _get_partner_ids(self):
+       for rec in self:
+           if rec.partner_ids:
+               partner_custom = ','.join([p.name for p in rec.partner_ids])
+           else:
+               partner_custom = ''
+           rec.partner_id_custom = partner_custom
+
+
+    
+
 
         
-    def action_view_purchase_order(self):
-         return  {
-            'res_model': 'purchase.order',
-            'type': 'ir.actions.act_window',
-            'name': _("Purchase Order generated from %s"),
-            #'domain': [('id', 'in', purchase_order_ids)],
-            'view_mode': 'tree,form',
-        }
-    
-    # @api.depends('order_line.purchase_line_ids.order_id')
-    # def _compute_purchase_order_count(self):
-    #     for order in self:
-    #         if order.name:
-    #             achat = self.env['purchase.order'].search([('origin', '=',order.name)])
-    #             if achat:
-    #                 achat.project_client_tags = order.partner_id
-    #         order.purchase_order_count = len(order._get_purchase_orders())
-
-
-    def action_confirm(self):
-        res = super(Order, self).action_confirm()
-        nbre=0
-        order = self.env['sale.order'].search([('name','=',self.name)])
-        for line in self.order_line:
-           if line.product_template_id and line.product_template_id.route_ids:
-               for route in line.product_template_id.route_ids:
-                   if route.name in ('Produire','Réapprovisionner sur commande (MTO)'):
-                       nomenclature = self.env['mrp.bom'].search([('product_tmpl_id','=', line.product_template_id.id)])
-                       if nomenclature and nomenclature.bom_line_ids:
-                           print(" nomenclature",nomenclature)
-                           for product in nomenclature.bom_line_ids:
-                              nbre+=1
-                              supplier = product.product_id.seller_ids[0]
-                             
-                              purchase_order = self.env['purchase.order'].create({
-                                    'partner_id': supplier.id,  
-                                    'origin': self.name,
-                              })
-                             
-                              self.env['purchase.order.line'].create({
-                                'order_id': purchase_order.id,
-                                'product_id': product.product_id.id,
-                                'name': product.product_id.name,
-                                'product_qty': line.product_uom_qty * product.product_qty,
-                                'price_unit': 40000, 
-                            })
-        order.write({'purchase_order_count':nbre })
-        _logger.info('#########################') 
-        _logger.info(self.purchase_order_count) 
-        _logger.info(order.purchase_order_count) 
-        _logger.info('TTTTTTTTTTTTTTTTTTTTTTTTT')  
-        self.state_fabrik=True                 
-        return res
-            
-
-
-class Task(models.Model):
-    _inherit = "project.task"
-    
-    employe_id = fields.Many2one('hr.employee', string="Employes")
-    date_livraison = fields.Datetime(string="Date de livraison")
-    commande = fields.Many2one('sale.order',string='Commande')
-
-
-
-    @api.onchange('commande')
-    def get_date_client(self):
-        if self.commande:
-            self.date_livraison, self.partner_id = self.commande.commitment_date, self.commande.partner_id

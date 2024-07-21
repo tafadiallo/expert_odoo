@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="odoo_client_sale_order_view_form" model="ir.ui.view">
+        <field name="name">odoo_client.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//sheet//group[@name='sale_header']//group[@name='order_details']//field[@name='date_order']" position="replace">
+                <field name="date_order" nolabel="1" groups="base.group_no_one" invisible="state in ('sale', 'done', 'cancel')"/>
+                <field name="so_client" invisible='1'/>
+                 <field name='state_achat' invisible='1'/>
+                <field name='nbre_ids' invisible='1'/>
+            </xpath>      
+          
+          <!-- <xpath expr="//div[@name='button_box']" position="inside">
+             <button  name="action_view_purchase_orders" position='after'>
+                <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card"  attrs="{'invisible': [('state_fabrik', '=', False)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                        <span class="o_stat_text">Purchase</span>
+                    </div>
+                </button>
+            </button>
+            </xpath>   
+          
+        </field> -->
+
+        <!-- <button  name="action_view_purchase_orders" position='replace'>
+            <button class="oe_stat_button" name="action_view_purchase_orders" type="object" icon="fa-credit-card">
+                <div class="o_field_widget o_stat_info">
+                    <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                    <span class="o_stat_text">Purchase</span>
+                </div>
+            </button>
+        </button>  -->
+
+        </field>
+    </record>
+</odoo>
