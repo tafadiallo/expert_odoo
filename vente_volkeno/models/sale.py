@@ -60,7 +60,7 @@ class Order(models.Model):
                     self.state_achat = True
             if self.state_achat == True:
                     purchase_order_achat = self.env['purchase.order'].create({
-                                'partner_id': line.product_template_id .seller_ids[0].partner_id.id if line.product_template_id .seller_ids else 9,
+                                'partner_id': line.product_template_id.seller_ids[0].name.id if line.product_template_id .seller_ids else 9,
                                 'origin': self.name,
                                 'project_client_tags':self.partner_id.id
                             })
@@ -94,7 +94,7 @@ class Order(models.Model):
                         for product in nomenclature.bom_line_ids:
                             
                             purchase_order = self.env['purchase.order'].create({
-                                'partner_id': product.product_id.seller_ids[0].partner_id.id,
+                                'partner_id': product.product_id.seller_ids[0].name.id,
                                 'origin': self.name,
                                 'project_client_tags':self.partner_id.id
                             })
