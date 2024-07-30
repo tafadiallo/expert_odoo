@@ -2,15 +2,16 @@
 {
     "name": " VENTES: ",
     'summary': """Gestion des ventes de Sheznou""",
-    "version": "15.0.1.0.0",
+    "version": "17.0.1.0.0",
     "author":"Mouhamadou Moustapha DIALLO, Mouhamadou Hafiz KA et Ali Adilani EL FAYAZ ",
     "website" : "",
     "category" : "", 
-    "depends" : ['product','mrp','contacts','sale','purchase','repair','project'],
+    "depends" : ['product','mrp','contacts','sale','purchase','repair','project','timesheet_grid','hr_presence','hr_attendance'],
     'description': """ ventes """,
     'data': [    
            'views/produit.xml',
            'views/achat.xml',
+           'views/attendance.xml',
            'views/sale.xml',
            'views/icron_achat.xml',
            'views/projet.xml',

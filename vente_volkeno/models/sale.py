@@ -86,7 +86,7 @@ class Order(models.Model):
                         self.state_fabrik = True
                     # if route.name in ('Acheter'):
                     #     self.state_achat = True
-                        
+                         
                 if  self.state_fabrik == True:
                     nomenclature = self.env['mrp.bom'].search([('product_tmpl_id', '=', line.product_template_id.id)])
                     

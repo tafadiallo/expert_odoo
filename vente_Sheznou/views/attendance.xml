@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+     <record id="attendance_form" model="ir.ui.view">
+        <field name="name">hr.attendance.form</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//group//group//group//field[@name='overtime_hours']" position="after">
+				    <field name="timesheet" widget="many2many_tags" options="{'no_create':1,'no_create_edit':1}" />
+                    <field name="worked_hours_2" widget="float_time"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
